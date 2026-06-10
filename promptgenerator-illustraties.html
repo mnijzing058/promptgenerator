@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promptgenerator — Educatieve Illustraties</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --bg-p: #ffffff;
+  --bg-s: #f5f4f1;
+  --bg-warn: #fffbeb;
+  --bg-danger: #fef2f0;
+  --bg-info: #eff6ff;
+  --tx-p: #1c1c1a;
+  --tx-s: #5f5f5c;
+  --tx-t: #9b9b96;
+  --tx-warn: #92400e;
+  --tx-danger: #991b1b;
+  --tx-info: #1e40af;
+  --bd: rgba(0,0,0,0.10);
+  --bd-h: rgba(0,0,0,0.20);
+  --bd-warn: #f59e0b;
+  --bd-danger: #fca5a5;
+  --bd-info: #93c5fd;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --mono: 'Courier New', Courier, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-p: #1e1e1c;
+    --bg-s: #282826;
+    --bg-warn: #2d2008;
+    --bg-danger: #2d1010;
+    --bg-info: #0f1d3a;
+    --tx-p: #e8e8e5;
+    --tx-s: #a0a09c;
+    --tx-t: #686864;
+    --tx-warn: #fcd34d;
+    --tx-danger: #fca5a5;
+    --tx-info: #93c5fd;
+    --bd: rgba(255,255,255,0.09);
+    --bd-h: rgba(255,255,255,0.18);
+    --bd-warn: #d97706;
+    --bd-danger: #dc2626;
+    --bd-info: #3b82f6;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg-s);color:var(--tx-p);line-height:1.6;font-size:14px}
+input[type=text],textarea,select{font-family:inherit;font-size:13px;color:var(--tx-p);background:var(--bg-p);border:.5px solid var(--bd-h);border-radius:var(--r-md);padding:8px 10px;transition:border-color .15s,box-shadow .15s;outline:none;width:100%}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--bd-warn);box-shadow:0 0 0 3px rgba(245,158,11,.12)}
+textarea{resize:vertical}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 4.5L11 1' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;cursor:pointer}
+button{font-family:inherit;font-size:12px;font-weight:500;color:var(--tx-s);background:transparent;border:.5px solid var(--bd-h);border-radius:var(--r-md);padding:6px 12px;cursor:pointer;transition:background .12s;display:inline-flex;align-items:center;gap:5px}
+button:hover{background:var(--bg-s)}
+button:active{transform:scale(.98)}
+.header{background:var(--bg-p);border-bottom:.5px solid var(--bd);padding:16px 24px;position:sticky;top:0;z-index:100}
+.header h1{font-size:15px;font-weight:600;color:var(--tx-p)}
+.header p{font-size:12px;color:var(--tx-t);margin-top:2px}
+.main{max-width:720px;margin:0 auto;padding:24px 20px 64px}
+.s{background:var(--bg-p);border:.5px solid var(--bd);border-radius:var(--r-lg);margin-bottom:14px;overflow:hidden}
+.sh{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:.5px solid var(--bd);background:var(--bg-s)}
+.sn{min-width:26px;height:26px;border-radius:50%;background:var(--bg-warn);color:var(--tx-warn);border:.5px solid var(--bd-warn);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.st{font-size:14px;font-weight:500;color:var(--tx-p)}
+.ss{font-size:11px;color:var(--tx-s);margin-top:1px}
+.sb{padding:14px 16px;display:flex;flex-direction:column;gap:13px}
+.f{display:flex;flex-direction:column;gap:5px}
+.lbl{font-size:12px;font-weight:500;color:var(--tx-s)}
+.hint{font-size:11px;color:var(--tx-t)}
+.opt{font-size:10px;background:var(--bg-s);color:var(--tx-t);border-radius:3px;padding:1px 5px;margin-left:4px;display:inline-block;vertical-align:middle}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rg{display:flex;flex-direction:column;gap:6px}
+.ro{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:.5px solid var(--bd);border-radius:var(--r-md);cursor:pointer;transition:border-color .12s,background .12s}
+.ro:hover{border-color:var(--bd-h);background:var(--bg-s)}
+.ro.on{border-color:var(--bd-warn);background:var(--bg-warn)}
+.ro input[type=radio]{margin-top:3px;flex-shrink:0;accent-color:var(--tx-warn)}
+.rl{font-size:13px;font-weight:500;color:var(--tx-p)}
+.rd{font-size:11px;color:var(--tx-s)}
+.ro.on .rd{color:var(--tx-warn)}
+.warn{display:flex;gap:9px;padding:10px 13px;border-radius:var(--r-md);font-size:13px;line-height:1.5;align-items:flex-start}
+.wd{background:var(--bg-danger);border:.5px solid var(--bd-danger);color:var(--tx-danger)}
+.ww{background:var(--bg-warn);border:.5px solid var(--bd-warn);color:var(--tx-warn)}
+.lrow{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.lnr{min-width:24px;height:24px;border-radius:50%;background:var(--bg-info);color:var(--tx-info);font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.badd{border:.5px dashed var(--bd-h);background:transparent;border-radius:var(--r-md);padding:7px 12px;font-size:12px;color:var(--tx-s);cursor:pointer;width:100%;text-align:left;margin-top:2px}
+.badd:hover{background:var(--bg-s)}
+.out{border:.5px solid var(--bd);border-radius:var(--r-lg);overflow:hidden;margin-bottom:12px;background:var(--bg-s)}
+.oh{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:.5px solid var(--bd)}
+.ot{font-size:13px;font-weight:500;color:var(--tx-p)}
+.ob{padding:12px 16px}
+.ota{width:100%;background:var(--bg-p);border:.5px solid var(--bd);border-radius:var(--r-md);padding:10px 12px;font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--tx-p);resize:vertical;min-height:150px}
+.del-btn{width:28px;height:28px;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:var(--r-md)}
+@media(max-width:600px){.r2{grid-template-columns:1fr}.main{padding:16px 14px 48px}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>Promptgenerator — educatieve illustraties</h1>
+  <p>Vul de velden in om een kant-en-klare beeldprompt te genereren</p>
+</header>
+
+<main class="main">
+
+<!-- 1. Beslisboom -->
+<div class="s">
+  <div class="sh">
+    <div class="sn">1</div>
+    <div><div class="st">Beslisboom</div><div class="ss">Is een statisch beeld didactisch gerechtvaardigd?</div></div>
+  </div>
+  <div class="sb">
+    <div class="f">
+      <div class="lbl">Welke functie heeft het beeld?</div>
+      <div class="rg" id="rg-bt">
+        <label class="ro" data-val="organizational"><input type="radio" name="bt"><div><div class="rl">Organizational</div><div class="rd">Relaties, structuren, hiërarchieën, classificaties</div></div></label>
+        <label class="ro" data-val="interpretive"><input type="radio" name="bt"><div><div class="rl">Interpretive</div><div class="rd">Abstracte concepten, onzichtbare processen, interne structuren</div></div></label>
+        <label class="ro" data-val="transformational"><input type="radio" name="bt"><div><div class="rl">Transformational</div><div class="rd">Verandering, beweging, processen, tijdsverloop</div></div></label>
+        <label class="ro" data-val="representational"><input type="radio" name="bt"><div><div class="rl">Representational</div><div class="rd">Hoe iets eruitziet (herkenning als leerdoel)</div></div></label>
+        <label class="ro" data-val="decoratief"><input type="radio" name="bt"><div><div class="rl">Decoratief</div><div class="rd">Puur decoratief — geen leerdoel</div></div></label>
+      </div>
+    </div>
+    <div id="warn-dec" class="warn wd" style="display:none">
+      <i class="ti ti-ban" aria-hidden="true" style="font-size:16px;margin-top:1px;flex-shrink:0"></i>
+      <div><strong>Geen afbeelding nodig.</strong> Het beeld heeft geen leerdoel en is puur decoratief. De leerdoelen worden voldoende ondersteund door de tekst alleen.</div>
+    </div>
+    <div id="beweging-wrap" style="display:none" class="f">
+      <div class="lbl">Is beweging essentieel voor het leerdoel?</div>
+      <div class="hint">Bijv. waterkringloop, energieomzetting, historische ontwikkeling, ketenreactie</div>
+      <div class="rg" id="rg-bew">
+        <label class="ro" data-val="nee"><input type="radio" name="bew"><div><div class="rl">Nee — statisch beeld volstaat</div></div></label>
+        <label class="ro" data-val="ja"><input type="radio" name="bew"><div><div class="rl">Ja — het proces zélf is het leerdoel</div></div></label>
+      </div>
+    </div>
+    <div id="warn-anim" class="warn ww" style="display:none">
+      <i class="ti ti-info-circle" aria-hidden="true" style="font-size:16px;margin-top:1px;flex-shrink:0"></i>
+      <div><strong>Animatie is didactisch sterker.</strong> Overweeg een geanimeerde stapsgewijze infographic, een simulatie of een korte uitlegvideo. Je kunt hieronder toch doorgaan met een statische prompt.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Basisinformatie -->
+<div class="s">
+  <div class="sh">
+    <div class="sn">2</div>
+    <div><div class="st">Basisinformatie</div><div class="ss">Leerdoel, vak en doelgroep</div></div>
+  </div>
+  <div class="sb">
+    <div class="f">
+      <div class="lbl">Leerdoel</div>
+      <div class="hint">Concreet en volledig — bijv. "De leerling kan de inwendige opbouw van een vulkaan benoemen."</div>
+      <textarea id="leerdoel" rows="3" placeholder="De leerling kan …"></textarea>
+    </div>
+    <div class="r2">
+      <div class="f">
+        <div class="lbl">Vak</div>
+        <select id="vak">
+          <option value="">— selecteer —</option>
+          <option value="aardrijkskunde">Aardrijkskunde</option>
+          <option value="geschiedenis">Geschiedenis</option>
+          <option value="natuur">Natuur en techniek</option>
+          <option value="anders">Anders</option>
+        </select>
+        <input type="text" id="anders-vak" placeholder="Naam van het vak" style="display:none;margin-top:6px">
+      </div>
+      <div class="f">
+        <div class="lbl">Doelgroep / niveau</div>
+        <select id="niveau">
+          <option value="">— selecteer —</option>
+          <option>Groep 3</option><option>Groep 4</option><option>Groep 5</option>
+          <option>Groep 6</option><option>Groep 7</option><option>Groep 8</option>
+          <option>Brugklas (klas 1)</option><option>Klas 2</option><option>Klas 3</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Visueel hulpmiddel -->
+<div class="s">
+  <div class="sh">
+    <div class="sn">3</div>
+    <div><div class="st">Visueel hulpmiddel</div><div class="ss">Vakspecifiek instrument</div></div>
+  </div>
+  <div class="sb">
+    <div class="f">
+      <div class="lbl">Type hulpmiddel</div>
+      <select id="hulpmiddel" disabled>
+        <option value="">Selecteer eerst een vak (stap 2)</option>
+      </select>
+      <input type="text" id="anders-hulpmiddel" placeholder="Beschrijf het hulpmiddel" style="display:none;margin-top:6px">
+    </div>
+  </div>
+</div>
+
+<!-- 4. Illustratieontwerp -->
+<div class="s">
+  <div class="sh">
+    <div class="sn">4</div>
+    <div><div class="st">Illustratieontwerp</div><div class="ss">Cognitief model — kern van de productieprompt</div></div>
+  </div>
+  <div class="sb">
+    <div class="f">
+      <div class="lbl">Visuele structuur</div>
+      <div class="hint">Type cognitief model — bijv. "Symmetrische doorsnede, vulkaan gecentreerd, ondergrond zichtbaar."</div>
+      <textarea id="vis-structuur" rows="2" placeholder="bijv. verticale doorsnede, centraal geplaatst …"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Compositie</div>
+      <div class="hint">Opbouw van het canvas, verhoudingen, witruimte</div>
+      <textarea id="compositie" rows="2" placeholder="bijv. grote centrale illustratie ca. 70% van canvas, witruimte onderaan voor legenda …"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Belangrijkste elementen</div>
+      <div class="hint">Alle objecten, structuren en processen die zichtbaar moeten zijn</div>
+      <textarea id="elementen" rows="3" placeholder="bijv. kegelvorm met lagen lava en as, magmakamer, stijgkanaal, aspluim …"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Ruimtelijke ordening</div>
+      <div class="hint">Waar staat elk element op het canvas?</div>
+      <textarea id="ordening" rows="2" placeholder="bijv. magmakamer onderaan midden, stijgkanaal recht omhoog, krater bovenaan …"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Relaties en pijlen</div>
+      <div class="hint">Oorzaken, gevolgen, stappen, richtingen</div>
+      <textarea id="pijlen" rows="2" placeholder="bijv. opwaartse pijl in stijgkanaal, cirkelpijl bij kringloop …"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Aanwijspunten voor labels</div>
+      <div class="hint">Genummerde callout-cirkels in het beeld; de tekst voeg je toe in stap 6</div>
+      <textarea id="aanwijspunten" rows="2" placeholder="bijv. callout-cirkels 1–6 bij: krater, stijgkanaal, magmakamer, lagen, aspluim, parasietkrater"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Vergrote details<span class="opt">optioneel</span></div>
+      <div class="hint">Detailvensters of uitvergrotingen</div>
+      <textarea id="details" rows="2" placeholder="bijv. klein cirkelvormig detailvenster rechtsboven met uitsnede van de gelaagde opbouw …"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Interne structuur<span class="opt">optioneel</span></div>
+      <div class="hint">Lagen, ondergrond, weefsels, inwendige componenten</div>
+      <textarea id="intern" rows="2" placeholder="bijv. zichtbare gesteentelagen onder maaiveld rond de magmakamer …"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Vakspecifieke stijlaanpassing<span class="opt">optioneel</span></div>
+      <div class="hint">Alleen als een element een specifiek kleuraccent nodig heeft. De aquarel/gouache-basisstijl staat vast.</div>
+      <input type="text" id="stijlaanpassing" placeholder="bijv. warme rood-oranje tinten voor magma, gedempte bruinen voor gesteente">
+    </div>
+  </div>
+</div>
+
+<!-- 5. Feitencheck -->
+<div class="s">
+  <div class="sh">
+    <div class="sn">5</div>
+    <div><div class="st">Feitencheck</div><div class="ss">Verificatie vóór gebruik in lesmateriaal</div></div>
+  </div>
+  <div class="sb">
+    <div class="f">
+      <div class="lbl">Elementen die inhoudelijk correct moeten zijn</div>
+      <div class="hint">Bijv. verhoudingen, volgorde, anatomie, historische details, geografische ligging</div>
+      <textarea id="feitencheck" rows="3" placeholder="bijv. magmakamer onderaan, stijgkanaal recht omhoog, lagen van afwisselend lava en as …"></textarea>
+    </div>
+    <div class="f">
+      <div class="lbl">Verificatiepunten voor de docent<span class="opt">optioneel</span></div>
+      <div class="hint">Wat moet een vakdocent controleren voordat het materiaal wordt gebruikt?</div>
+      <textarea id="verificatie" rows="2" placeholder="bijv. controleer of het vulkaantype (schild vs. stratovulkaan) klopt met de lesmethode …"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Labels -->
+<div class="s">
+  <div class="sh">
+    <div class="sn">6</div>
+    <div><div class="st">Labels en legenda</div><div class="ss">Toe te voegen in Canva — niet ingebakken in het beeld</div></div>
+  </div>
+  <div class="sb">
+    <div class="f">
+      <div class="lbl">Kop van de illustratie</div>
+      <input type="text" id="kop" placeholder='bijv. "Doorsnede van een vulkaan"'>
+    </div>
+    <div class="f">
+      <div class="lbl">Genummerde labels</div>
+      <div class="hint">Corresponderen met de callout-cirkels in het beeld</div>
+      <div id="labels-wrap"></div>
+      <button class="badd" id="btn-add-label"><i class="ti ti-plus" aria-hidden="true"></i> Label toevoegen</button>
+    </div>
+    <div class="f">
+      <div class="lbl">Legenda<span class="opt">optioneel</span></div>
+      <input type="text" id="legenda" placeholder="bijv. rood = lava, bruin = gesteente">
+    </div>
+  </div>
+</div>
+
+<!-- Output: productieprompt -->
+<div class="out">
+  <div class="oh">
+    <div class="ot"><i class="ti ti-file-text" aria-hidden="true" style="margin-right:5px"></i>Productieprompt</div>
+    <button id="btn-cp-prompt"><i class="ti ti-copy" aria-hidden="true"></i> Kopieer</button>
+  </div>
+  <div class="ob">
+    <textarea class="ota" id="prompt-out" readonly rows="13"></textarea>
+  </div>
+</div>
+
+<!-- Output: labellijst -->
+<div class="out" id="label-out-section" style="display:none">
+  <div class="oh">
+    <div class="ot"><i class="ti ti-tags" aria-hidden="true" style="margin-right:5px"></i>Labellijst</div>
+    <button id="btn-cp-labels"><i class="ti ti-copy" aria-hidden="true"></i> Kopieer</button>
+  </div>
+  <div class="ob">
+    <textarea class="ota" id="label-out" readonly rows="6"></textarea>
+  </div>
+</div>
+
+</main>
+
+<script>
+const STIJL = 'Zachte aquarel-/gouache-schoolboekstijl met lichte papiertextuur, afgeronde vormen, zachte contouren, geen harde zwarte lijnen, subtiele schaduwen, semi-realistische vereenvoudiging, geen fotorealisme. Gedempte natuurlijke kleuren met beperkte verzadiging. Vriendelijke, toegankelijke uitstraling met hoge leesbaarheid. Heldere visuele hiërarchie: grote hoofdillustratie, ondersteunende deelillustraties, voldoende witruimte. Geen flat design, vector-art, 3D-renders, stripstijl of generieke AI-infographiclook. Geen tekst ingebakken in het beeld; alleen genummerde callout-cirkels en lege labelvlakken met aanwijslijnen.';
+
+const HULP = {
+  aardrijkskunde: ['Kaart','Doorsnede','Klimaatdiagram','Kringloopmodel','Landschapsreconstructie','Luchtfoto/kaartvergelijking','Anders'],
+  geschiedenis: ['Tijdlijn','Tijdbalk','Tijdvakkenoverzicht','Historische kaart','Reconstructietekening','Oorzaak-gevolgschema','Toen-nu-vergelijking','Anders'],
+  natuur: ['Systeemdiagram','Doorsnede','Procesmodel','Vergelijkingsschema','Onderzoeksmodel','Energiepad','Anders'],
+  anders: ['Anders']
+};
+
+const VAK_NAAM = {aardrijkskunde:'Aardrijkskunde',geschiedenis:'Geschiedenis',natuur:'Natuur en techniek',anders:''};
+const BT_NAAM = {organizational:'Organizational',interpretive:'Interpretive',transformational:'Transformational',representational:'Representational',decoratief:'Decoratief'};
+
+let labels = [{id:1,tekst:''}];
+
+function show(id,v){ const e=document.getElementById(id); if(e) e.style.display=v?'':'none'; }
+function gv(id){ const e=document.getElementById(id); return e?e.value.trim():''; }
+function getRadioVal(gid){ const on=document.querySelector('#'+gid+' .ro.on'); return on?on.dataset.val:''; }
+
+function initRadio(gid,cb){
+  document.querySelectorAll('#'+gid+' input[type=radio]').forEach(inp=>{
+    inp.addEventListener('change',()=>{
+      document.querySelectorAll('#'+gid+' .ro').forEach(r=>r.classList.remove('on'));
+      inp.closest('.ro').classList.add('on');
+      cb(inp.closest('.ro').dataset.val);
+      updateOutput();
+    });
+  });
+}
+
+initRadio('rg-bt', val=>{
+  show('warn-dec', val==='decoratief');
+  show('beweging-wrap', val && val!=='decoratief');
+  if(val==='decoratief'||!val) show('warn-anim',false);
+});
+
+initRadio('rg-bew', val=>{
+  show('warn-anim', val==='ja');
+});
+
+document.getElementById('vak').addEventListener('change',function(){
+  const vak=this.value;
+  document.getElementById('anders-vak').style.display=vak==='anders'?'':'none';
+  const hulpEl=document.getElementById('hulpmiddel');
+  document.getElementById('anders-hulpmiddel').style.display='none';
+  if(vak && HULP[vak]){
+    hulpEl.disabled=false;
+    hulpEl.innerHTML='<option value="">— selecteer —</option>'+HULP[vak].map(h=>`<option value="${h}">${h}</option>`).join('');
+  } else {
+    hulpEl.disabled=true;
+    hulpEl.innerHTML='<option value="">Selecteer eerst een vak (stap 2)</option>';
+  }
+  updateOutput();
+});
+
+document.getElementById('hulpmiddel').addEventListener('change',function(){
+  document.getElementById('anders-hulpmiddel').style.display=this.value==='Anders'?'':'none';
+  updateOutput();
+});
+
+function renderLabels(){
+  const wrap=document.getElementById('labels-wrap');
+  wrap.innerHTML='';
+  labels.forEach((l,idx)=>{
+    const row=document.createElement('div');
+    row.className='lrow';
+    row.innerHTML=`<div class="lnr">${l.id}</div><input type="text" value="${l.tekst.replace(/"/g,'&quot;')}" placeholder="Label ${l.id}" style="flex:1">${labels.length>1?`<button class="del-btn" aria-label="Verwijder label ${l.id}"><i class="ti ti-x" style="font-size:13px" aria-hidden="true"></i></button>`:''}`;
+    wrap.appendChild(row);
+    row.querySelector('input').addEventListener('input',function(){labels[idx].tekst=this.value;updateOutput();});
+    const db=row.querySelector('.del-btn');
+    if(db) db.addEventListener('click',()=>{labels.splice(idx,1);labels=labels.map((x,i)=>({...x,id:i+1}));renderLabels();updateOutput();});
+  });
+}
+
+document.getElementById('btn-add-label').addEventListener('click',()=>{
+  labels.push({id:labels.length+1,tekst:''});
+  renderLabels();
+});
+
+renderLabels();
+
+['leerdoel','niveau','vis-structuur','compositie','elementen','ordening','pijlen','aanwijspunten','details','intern','stijlaanpassing','feitencheck','verificatie','kop','legenda','anders-vak','anders-hulpmiddel'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',updateOutput);
+});
+
+function updateOutput(){
+  const bt=getRadioVal('rg-bt');
+  const vak=document.getElementById('vak').value;
+  const vakNaam=vak==='anders'?gv('anders-vak'):(VAK_NAAM[vak]||'');
+  const hulpVal=document.getElementById('hulpmiddel').value;
+  const hulp=hulpVal==='Anders'?gv('anders-hulpmiddel'):hulpVal;
+  const stijlaanp=gv('stijlaanpassing');
+  const details=gv('details');
+  const intern=gv('intern');
+  const fc=gv('feitencheck');
+  const ver=gv('verificatie');
+
+  const lines=[
+    `Maak een educatieve illustratie die ${gv('leerdoel')||'[leerdoel invullen]'} visualiseert.`,
+    '',
+    `- VAK / NIVEAU: ${vakNaam||'[vak]'} — ${gv('niveau')||'[niveau]'}`,
+    `- BEELDTYPE: ${BT_NAAM[bt]||'[beeldtype]'} / ${hulp||'[hulpmiddel]'}`,
+    `- VISUELE STRUCTUUR: ${gv('vis-structuur')||'[visuele structuur]'}`,
+    `- COMPOSITIE: ${gv('compositie')||'[compositie]'}`,
+    `- BELANGRIJKSTE ELEMENTEN: ${gv('elementen')||'[elementen]'}`,
+    `- RUIMTELIJKE ORDENING: ${gv('ordening')||'[ruimtelijke ordening]'}`,
+    `- RELATIES EN PIJLEN: ${gv('pijlen')||'[relaties en pijlen]'}`,
+    `- AANWIJSPUNTEN VOOR LABELS: ${gv('aanwijspunten')||'[aanwijspunten]'}; geen ingebakken tekst in het beeld`,
+  ];
+  if(details) lines.push(`- VERGROTE DETAILS: ${details}`);
+  if(intern) lines.push(`- INTERNE STRUCTUUR: ${intern}`);
+  lines.push(`- STIJL: ${STIJL}${stijlaanp?' '+stijlaanp:''}`);
+  if(fc||ver){
+    lines.push('');
+    const parts=[fc,ver?'Verificatie voor docent: '+ver:''].filter(Boolean);
+    lines.push(`[FEITENCHECK: ${parts.join(' | ')}]`);
+  }
+  document.getElementById('prompt-out').value=lines.join('\n');
+
+  const gevuld=labels.filter(l=>l.tekst.trim());
+  const kop=gv('kop'); const leg=gv('legenda');
+  const hasLabels=gevuld.length>0||kop||leg;
+  show('label-out-section',hasLabels);
+  if(hasLabels){
+    const ll=['LABELLIJST (toe te voegen in Canva of andere opmaaktool)'];
+    gevuld.forEach(l=>ll.push(`${l.id} = ${l.tekst}`));
+    if(kop) ll.push(`Kop = "${kop}"`);
+    if(leg) ll.push(`Legenda = ${leg}`);
+    document.getElementById('label-out').value=ll.join('\n');
+  }
+}
+
+function makeCopy(outId,btnId){
+  document.getElementById(btnId).addEventListener('click',function(){
+    navigator.clipboard.writeText(document.getElementById(outId).value).then(()=>{
+      const orig=this.innerHTML;
+      this.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> Gekopieerd';
+      setTimeout(()=>{this.innerHTML=orig;},2000);
+    });
+  });
+}
+
+makeCopy('prompt-out','btn-cp-prompt');
+makeCopy('label-out','btn-cp-labels');
+updateOutput();
+</script>
+</body>
+</html>
